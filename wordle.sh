@@ -25,7 +25,7 @@ for arg; do
     grep="$grep$arg"
 done
 
-command="sort wordle.txt | grep -v '[$missedletters]'"
+command="sort dict | grep -v '[$missedletters]'"
 
 if [ ${#goodletters} -gt 0 ]; then
     for (( i=0; i<${#goodletters}; i++ )); do 
