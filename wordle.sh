@@ -16,7 +16,7 @@ for arg; do
         grep="$grep."
         continue
     fi
-    if [ ${arg:0:1} == "?" ]; then
+    if [ ${arg:0:1} == "-" ]; then
         goodletters="$goodletters${arg:1}"
         grep="$grep[^${arg:1}]"
         continue
