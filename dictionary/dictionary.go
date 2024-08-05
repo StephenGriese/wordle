@@ -16,7 +16,6 @@ func Create(stderr io.Writer, dict, remove string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	_, _ = fmt.Fprintf(stderr, "Loaded initially has %d words\n", len(loaded))
 
 	used, err := pastwords.FetchPastWords()
 	if err != nil {
@@ -100,7 +99,7 @@ func loadDictionary(stderr io.Writer, path string) (map[string]bool, error) {
 		return nil, err
 	}
 
-	_, _ = fmt.Fprintf(stderr, "Loaded %d words\n", len(set))
+	_, _ = fmt.Fprintf(stderr, "Loaded %d words from %s\n", len(set), path)
 
 	return set, nil
 }

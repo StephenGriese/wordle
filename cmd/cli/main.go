@@ -22,14 +22,14 @@ func Run(
 	stdin io.Reader,
 	stdout, stderr io.Writer,
 ) error {
-	dict := getenv("DICTIONARY")
+	dict := getenv("WORDLE_DICTIONARY")
 	if dict == "" {
-		return fmt.Errorf("missing DICTIONARY environment variable")
+		return fmt.Errorf("missing WORDLE_DICTIONARY environment variable")
 	}
 
-	remove := getenv("REMOVE")
+	remove := getenv("WORDLE_REMOVE")
 	if remove == "" {
-		_, _ = fmt.Fprintf(stderr, "No REMOVE environment variable. Will not remove any words.\n")
+		_, _ = fmt.Fprintf(stderr, "No WORDLE_REMOVE environment variable. Will not remove any words.\n")
 	}
 
 	words, err := dictionary.Create(stderr, dict, remove)
