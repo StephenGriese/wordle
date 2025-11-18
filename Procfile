@@ -1,2 +1,2 @@
-web: ./wordle-server
+web: ./bin/server
 
