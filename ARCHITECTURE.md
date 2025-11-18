@@ -77,9 +77,9 @@
             │
 ┌──────────────────────────────────────────────────────────────┐
 │                      Data Files                              │
-│  • wordle.txt (dictionary)                                   │
-│  • words-to-remove (custom exclusions)                       │
-│  • NYTimes past words (fetched from web)                     │
+│  • american-english (dictionary - 5905 words)                │
+│  • words-to-remove (custom exclusions - 14 words)            │
+│  • NYTimes past words (fetched from web - 1600+)             │
 └──────────────────────────────────────────────────────────────┘
 
 
