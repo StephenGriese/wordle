@@ -8,7 +8,6 @@ import (
 	"os"
 	"wordle/dictionary"
 	"wordle/handlers"
-	"wordle/views"
 )
 
 func main() {
@@ -56,10 +55,6 @@ func run() error {
 		Level: slog.LevelInfo,
 	}))
 
-	// Create views
-	formView := views.NewView("bootstrap", "web/views/wordleform.gohtml")
-	resultsView := views.NewView("results", "web/views/results.gohtml")
-
 	// Set up routes
 	mux := http.NewServeMux()
 
@@ -68,10 +63,10 @@ func run() error {
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 
 	// Main page
-	mux.HandleFunc("GET /", handlers.HandleGetForm(logger, formView))
+	mux.HandleFunc("GET /", handlers.HandleGetForm(logger))
 
 	// Solve endpoint
-	mux.HandleFunc("POST /wordle/solve", handlers.HandlePostSolve(logger, formView, resultsView, wordList))
+	mux.HandleFunc("POST /wordle/solve", handlers.HandlePostSolve(logger, wordList))
 
 	// Reload endpoint (for manual dictionary refresh)
 	mux.HandleFunc("POST /reload", handlers.HandleReload(logger, wordList))

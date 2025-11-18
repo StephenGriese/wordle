@@ -1,13 +1,12 @@
 package handlers
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
 	"time"
+	"wordle/components"
 	"wordle/usrcmd"
-	"wordle/views"
 	"wordle/wordle"
 )
 
@@ -20,40 +19,26 @@ type WordList interface {
 }
 
 // FormData represents the form input from the user
-type FormData struct {
-	Missed string
-	Pos0   string
-	Pos1   string
-	Pos2   string
-	Pos3   string
-	Pos4   string
-}
-
-// PageData represents the data passed to templates
-type PageData struct {
-	FormData  FormData
-	Results   []string
-	WordCount int
-	Error     string
-}
+// This is an alias to the components.FormData type for convenience
+type FormData = components.FormData
 
 // HandleGetForm renders the initial empty form
-func HandleGetForm(logger *slog.Logger, view *views.View) http.HandlerFunc {
+func HandleGetForm(logger *slog.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger.Info("Getting Wordle form")
 
-		data := PageData{
-			FormData: FormData{
-				Missed: "",
-				Pos0:   ".",
-				Pos1:   ".",
-				Pos2:   ".",
-				Pos3:   ".",
-				Pos4:   ".",
-			},
+		data := FormData{
+			Missed: "",
+			Pos0:   ".",
+			Pos1:   ".",
+			Pos2:   ".",
+			Pos3:   ".",
+			Pos4:   ".",
 		}
 
-		err := view.Render(w, data)
+		page := components.Page("Wordle Helper", components.WordleForm(data, ""))
+		w.Header().Set("Content-Type", "text/html")
+		err := page.Render(w)
 		if err != nil {
 			logger.Error("Error rendering view", "error", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -62,14 +47,14 @@ func HandleGetForm(logger *slog.Logger, view *views.View) http.HandlerFunc {
 }
 
 // HandlePostSolve processes the form submission and returns filtered words
-func HandlePostSolve(logger *slog.Logger, view *views.View, resultsView *views.View, wordList WordList) http.HandlerFunc {
+func HandlePostSolve(logger *slog.Logger, wordList WordList) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger.Info("Solving Wordle")
 
 		// Parse form data
 		if err := r.ParseForm(); err != nil {
 			logger.Error("Error parsing form", "error", err)
-			renderError(w, view, logger, "Invalid form data", FormData{})
+			renderError(w, logger, "Invalid form data", FormData{})
 			return
 		}
 
@@ -93,7 +78,7 @@ func HandlePostSolve(logger *slog.Logger, view *views.View, resultsView *views.V
 		missed, lettersAt, lettersNotAt, err := parseFormToWordleInputs(formData)
 		if err != nil {
 			logger.Error("Error parsing wordle inputs", "error", err)
-			renderError(w, view, logger, "Invalid input format: "+err.Error(), formData)
+			renderError(w, logger, "Invalid input format: "+err.Error(), formData)
 			return
 		}
 
@@ -105,24 +90,21 @@ func HandlePostSolve(logger *slog.Logger, view *views.View, resultsView *views.V
 
 		logger.Info("Found possible words", "count", len(possibles), "total_words", len(words))
 
-		// Render results
-		data := PageData{
-			FormData:  formData,
-			Results:   possibles,
-			WordCount: len(possibles),
-		}
-
 		// Check if this is an HTMX request - if so, render only the results partial
 		isHTMX := r.Header.Get("HX-Request") == "true"
 
-		var renderView *views.View
+		w.Header().Set("Content-Type", "text/html")
+
 		if isHTMX {
-			renderView = resultsView // Render just the results partial
+			// Render just the results partial
+			results := components.Results(possibles, len(possibles))
+			err = results.Render(w)
 		} else {
-			renderView = view // Render full page (for non-HTMX fallback)
+			// Render full page (for non-HTMX fallback)
+			page := components.Page("Wordle Helper", components.WordleForm(formData, ""))
+			err = page.Render(w)
 		}
 
-		err = renderView.Render(w, data)
 		if err != nil {
 			logger.Error("Error rendering view", "error", err)
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -156,13 +138,10 @@ func parseFormToWordleInputs(formData FormData) (string, []wordle.LetterAt, []wo
 }
 
 // renderError renders the form with an error message
-func renderError(w http.ResponseWriter, view *views.View, logger *slog.Logger, errMsg string, formData FormData) {
-	data := PageData{
-		FormData: formData,
-		Error:    errMsg,
-	}
-
-	err := view.Render(w, data)
+func renderError(w http.ResponseWriter, logger *slog.Logger, errMsg string, formData FormData) {
+	page := components.Page("Wordle Helper", components.WordleForm(formData, errMsg))
+	w.Header().Set("Content-Type", "text/html")
+	err := page.Render(w)
 	if err != nil {
 		logger.Error("Error rendering error view", "error", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -181,10 +160,7 @@ func HandleReload(logger *slog.Logger, wordList WordList) http.HandlerFunc {
 			logger.Error("Failed to reload dictionary", "error", err)
 			w.Header().Set("Content-Type", "text/html")
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = fmt.Fprintf(w, `<div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
-				<strong>Error:</strong> Failed to reload dictionary: %v
-				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-			</div>`, err)
+			_ = components.ReloadErrorMessage(err).Render(w)
 			return
 		}
 
@@ -199,9 +175,6 @@ func HandleReload(logger *slog.Logger, wordList WordList) http.HandlerFunc {
 		// Return HTML for HTMX to display
 		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(http.StatusOK)
-		_, _ = fmt.Fprintf(w, `<div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
-			✅ Dictionary reloaded! %d words available (Updated: %s)
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>`, newCount, newReload.Format("3:04 PM"))
+		_ = components.ReloadSuccessMessage(newCount, newReload.Format("3:04 PM")).Render(w)
 	}
 }
