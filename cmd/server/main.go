@@ -29,23 +29,27 @@ func run() error {
 		_, _ = fmt.Fprintf(os.Stderr, "No WORDLE_REMOVE environment variable. Will not remove any words.\n")
 	}
 
-	port := os.Getenv("WORDLE_PORT")
+	// Use PORT from Heroku, fallback to WORDLE_PORT or 8080
+	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = os.Getenv("WORDLE_PORT")
+		if port == "" {
+			port = "8080"
+		}
 	}
 
+	// Use WORDLE_HOST or default to 0.0.0.0 for cloud deployment
 	host := os.Getenv("WORDLE_HOST")
 	if host == "" {
-		host = "localhost"
+		host = "0.0.0.0"
 	}
 
-	// Initialize dictionary
+	// Initialize dictionary with reload capability
 	_, _ = fmt.Fprintf(os.Stderr, "Loading dictionary from %s\n", dict)
-	words, err := dictionary.Create(os.Stderr, dict, remove)
+	wordList, err := dictionary.NewWordList(os.Stderr, dict, remove)
 	if err != nil {
 		return fmt.Errorf("failed to load dictionary: %w", err)
 	}
-	_, _ = fmt.Fprintf(os.Stderr, "Loaded %d words\n", len(words))
 
 	// Set up logging
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
@@ -67,7 +71,10 @@ func run() error {
 	mux.HandleFunc("GET /", handlers.HandleGetForm(logger, formView))
 
 	// Solve endpoint
-	mux.HandleFunc("POST /wordle/solve", handlers.HandlePostSolve(logger, formView, resultsView, words))
+	mux.HandleFunc("POST /wordle/solve", handlers.HandlePostSolve(logger, formView, resultsView, wordList))
+
+	// Reload endpoint (for manual dictionary refresh)
+	mux.HandleFunc("POST /reload", handlers.HandleReload(logger, wordList))
 
 	// Start server
 	addr := host + ":" + port

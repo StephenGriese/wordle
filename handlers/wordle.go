@@ -1,13 +1,23 @@
 package handlers
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 	"wordle/usrcmd"
 	"wordle/views"
 	"wordle/wordle"
 )
+
+// WordList interface for dictionary management
+type WordList interface {
+	Words() []string
+	Reload() error
+	LastReload() time.Time
+	Count() int
+}
 
 // FormData represents the form input from the user
 type FormData struct {
@@ -52,7 +62,7 @@ func HandleGetForm(logger *slog.Logger, view *views.View) http.HandlerFunc {
 }
 
 // HandlePostSolve processes the form submission and returns filtered words
-func HandlePostSolve(logger *slog.Logger, view *views.View, resultsView *views.View, words []string) http.HandlerFunc {
+func HandlePostSolve(logger *slog.Logger, view *views.View, resultsView *views.View, wordList WordList) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger.Info("Solving Wordle")
 
@@ -87,10 +97,13 @@ func HandlePostSolve(logger *slog.Logger, view *views.View, resultsView *views.V
 			return
 		}
 
+		// Get current word list (thread-safe)
+		words := wordList.Words()
+
 		// Find possible words
 		possibles := wordle.MakePossibles(words, missed, lettersAt, lettersNotAt)
 
-		logger.Info("Found possible words", "count", len(possibles))
+		logger.Info("Found possible words", "count", len(possibles), "total_words", len(words))
 
 		// Render results
 		data := PageData{
@@ -153,5 +166,42 @@ func renderError(w http.ResponseWriter, view *views.View, logger *slog.Logger, e
 	if err != nil {
 		logger.Error("Error rendering error view", "error", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+// HandleReload handles manual dictionary reload requests
+func HandleReload(logger *slog.Logger, wordList WordList) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logger.Info("Reloading dictionary")
+
+		lastReload := wordList.LastReload()
+
+		err := wordList.Reload()
+		if err != nil {
+			logger.Error("Failed to reload dictionary", "error", err)
+			w.Header().Set("Content-Type", "text/html")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `<div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+				<strong>Error:</strong> Failed to reload dictionary: %v
+				<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			</div>`, err)
+			return
+		}
+
+		newCount := wordList.Count()
+		newReload := wordList.LastReload()
+
+		logger.Info("Dictionary reloaded successfully",
+			"word_count", newCount,
+			"previous_reload", lastReload.Format(time.RFC3339),
+			"new_reload", newReload.Format(time.RFC3339))
+
+		// Return HTML for HTMX to display
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusOK)
+		_, _ = fmt.Fprintf(w, `<div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+			✅ Dictionary reloaded! %d words available (Updated: %s)
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		</div>`, newCount, newReload.Format("3:04 PM"))
 	}
 }
