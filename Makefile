@@ -31,6 +31,9 @@ test:
 target/local: modules
 	mkdir -p target/local/bin && go build -ldflags "$(LDFLAGS)" -o target/local/bin/wordle ./cmd/cli
 
+target/server: modules
+	mkdir -p target/local/bin && go build -ldflags "$(LDFLAGS)" -o target/local/bin/wordle-server ./cmd/server
+
 modules:
 	go mod tidy
 
@@ -39,4 +42,15 @@ clean-target:
 
 clean: clean-target
 
-.PHONY: clean lint modules build
+run-server:
+	@test -n "$(WORDLE_DICTIONARY)" || (echo "WORDLE_DICTIONARY not set. Run: export WORDLE_DICTIONARY=./wordle.txt" && exit 1)
+	@echo "Starting Wordle Helper server..."
+	@go run ./cmd/server/main.go
+
+run-server-dev:
+	@export WORDLE_DICTIONARY=./wordle.txt && \
+	export WORDLE_REMOVE=./words-to-remove && \
+	export WORDLE_PORT=8080 && \
+	go run ./cmd/server/main.go
+
+.PHONY: clean lint modules build run-server run-server-dev target/server

@@ -1,9 +1,27 @@
 A program to help play wordle
 
-At this point I'm looking at creating two things:
-1. A library that can be used to eliminate words from a list based on the results of a wordle turn
-2. A command line program that uses this library
-3. A web app that uses this library
+This project provides three ways to use the Wordle helper:
+1. **Library** - Core logic to eliminate words based on Wordle game results
+2. **Command line program** - Terminal-based interface (see below)
+3. **Web application** - Browser-based interface with modern UI (NEW! See [SERVER_QUICKSTART.md](SERVER_QUICKSTART.md))
+
+## 🚀 Quick Start - Web Server
+
+To run the web interface:
+
+```bash
+make run-server-dev
+```
+
+Then open http://localhost:8080 in your browser. You'll get a clean, Wordle-themed interface where you can:
+- Enter missed letters (gray squares)
+- Mark correct positions (green squares)
+- Mark wrong positions (yellow squares)
+- See all possible words instantly
+
+For detailed setup and usage instructions, see [SERVER_QUICKSTART.md](SERVER_QUICKSTART.md).
+
+## How the Library Works
 
 So the library will follow this basic algorithm:
 

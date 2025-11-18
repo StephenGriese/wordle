@@ -1,5 +1,148 @@
 {{define "yield"}}
 
-<h1>This is where all the wordle stuff will go</h1>
+{{if .Error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error:</strong> {{.Error}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{end}}
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Instructions Card -->
+        <div class="alert alert-info mb-4">
+            <h5 class="alert-heading">📖 How to use:</h5>
+            <div class="instructions">
+                <p class="mb-2"><strong>Missed Letters:</strong> Enter letters that are NOT in the word (gray squares ⬛)</p>
+                <p class="mb-2"><strong>Position boxes:</strong></p>
+                <ul class="mb-2">
+                    <li>Enter a letter if it's in the correct position (green square 🟩) - e.g., <code>a</code></li>
+                    <li>Enter <code>-</code> followed by letters if they're in the word but wrong position (yellow square 🟨) - e.g., <code>-abc</code></li>
+                    <li>Leave empty or use <code>.</code> if position is unknown</li>
+                </ul>
+                <p class="mb-0"><strong>Example:</strong> If you tried "CRANE" and got: C(gray), R(yellow), A(green), N(gray), E(gray) <br>
+                → Missed: <code>cne</code>, Position 1: <code>.</code>, Position 2: <code>-r</code>, Position 3: <code>a</code>, Position 4: <code>.</code>, Position 5: <code>.</code></p>
+            </div>
+        </div>
+
+        <!-- Input Form Card -->
+        <div class="form-card">
+            <form method="POST" action="/wordle/solve" hx-post="/wordle/solve" hx-target="#results-section" hx-indicator="#loading">
+                <div class="mb-4">
+                    <label for="missed" class="form-label fw-bold">Missed Letters (not in word)</label>
+                    <input type="text"
+                           class="form-control"
+                           id="missed"
+                           name="missed"
+                           value="{{.FormData.Missed}}"
+                           placeholder="e.g., xyz"
+                           autocomplete="off">
+                    <div class="form-text">Enter all letters that appeared gray (not in the word)</div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Word Positions (1-5)</label>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <div>
+                            <input type="text"
+                                   class="form-control position-input"
+                                   name="pos0"
+                                   value="{{.FormData.Pos0}}"
+                                   maxlength="10"
+                                   placeholder="."
+                                   autocomplete="off">
+                            <div class="position-label">1</div>
+                        </div>
+                        <div>
+                            <input type="text"
+                                   class="form-control position-input"
+                                   name="pos1"
+                                   value="{{.FormData.Pos1}}"
+                                   maxlength="10"
+                                   placeholder="."
+                                   autocomplete="off">
+                            <div class="position-label">2</div>
+                        </div>
+                        <div>
+                            <input type="text"
+                                   class="form-control position-input"
+                                   name="pos2"
+                                   value="{{.FormData.Pos2}}"
+                                   maxlength="10"
+                                   placeholder="."
+                                   autocomplete="off">
+                            <div class="position-label">3</div>
+                        </div>
+                        <div>
+                            <input type="text"
+                                   class="form-control position-input"
+                                   name="pos3"
+                                   value="{{.FormData.Pos3}}"
+                                   maxlength="10"
+                                   placeholder="."
+                                   autocomplete="off">
+                            <div class="position-label">4</div>
+                        </div>
+                        <div>
+                            <input type="text"
+                                   class="form-control position-input"
+                                   name="pos4"
+                                   value="{{.FormData.Pos4}}"
+                                   maxlength="10"
+                                   placeholder="."
+                                   autocomplete="off">
+                            <div class="position-label">5</div>
+                        </div>
+                    </div>
+                    <div class="form-text text-center mt-2">
+                        Green (correct): <code>a</code> | Yellow (wrong position): <code>-abc</code> | Unknown: <code>.</code>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-solve btn-lg">
+                        Find Possible Words
+                    </button>
+                    <div id="loading" class="htmx-indicator ms-2">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section">
+            {{if .Results}}
+            <div class="results-card">
+                <h3 class="mb-3">
+                    Possible Words
+                    <span class="badge bg-success">{{.WordCount}} found</span>
+                </h3>
+
+                {{if eq .WordCount 0}}
+                <div class="alert alert-warning">
+                    <h5 class="alert-heading">🤔 No matching words found</h5>
+                    <p class="mb-0">Please check your constraints - there might be a conflict in your clues.</p>
+                </div>
+                {{else}}
+                <div class="word-list">
+                    {{range .Results}}
+                    <span class="word-badge">{{.}}</span>
+                    {{end}}
+                </div>
+
+                {{if gt .WordCount 100}}
+                <div class="alert alert-info mt-3 mb-0">
+                    <small>💡 Tip: With {{.WordCount}} possible words, try entering more clues to narrow down the results.</small>
+                </div>
+                {{end}}
+                {{end}}
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>
 
 {{end}}

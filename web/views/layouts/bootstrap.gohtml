@@ -1,22 +1,139 @@
 {{define "bootstrap"}}
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <title>Roster</title>
-        <script src="/js/htmx-1.9.11.js"></script>
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Helper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/js/htmx-1.9.11.js"></script>
+    <style>
+        :root {
+            --wordle-green: #538d4e;
+            --wordle-yellow: #b59f3b;
+            --wordle-gray: #787c7e;
+            --wordle-light-gray: #d3d6da;
+        }
 
-    <body hx-boost="true">
-    <main>
-        <header>
-            <h1>Roster</h1>
-        </header>
-        <div>
-        <!-- Our content will go here. -->
-        {{template "yield" .}}
+        body {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+
+        .wordle-header {
+            background-color: white;
+            border-bottom: 1px solid var(--wordle-light-gray);
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .wordle-header h1 {
+            color: #212529;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .position-input {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: lowercase;
+            border: 2px solid var(--wordle-light-gray);
+        }
+
+        .position-input:focus {
+            border-color: var(--wordle-gray);
+            box-shadow: 0 0 0 0.2rem rgba(120,124,126,0.25);
+        }
+
+        .position-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .btn-solve {
+            background-color: var(--wordle-green);
+            border-color: var(--wordle-green);
+            color: white;
+            font-weight: bold;
+            padding: 12px 40px;
+            font-size: 18px;
+        }
+
+        .btn-solve:hover {
+            background-color: #446f41;
+            border-color: #446f41;
+            color: white;
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .word-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            border-left: 4px solid #0dcaf0;
+        }
+
+        .instructions {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .htmx-indicator {
+            display: none;
+        }
+
+        .htmx-request .htmx-indicator {
+            display: inline-block;
+        }
+
+        .htmx-request .btn-solve {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="wordle-header">
+        <div class="container">
+            <h1>🎯 Wordle Helper</h1>
+            <p class="text-muted mb-0">Find possible words based on your Wordle clues</p>
         </div>
+    </div>
 
-    </main>
-    </body>
-    </html>
+    <div class="container">
+        {{template "yield" .}}
+    </div>
+
+    <footer class="container mt-5">
+        <div class="text-center text-muted">
+            <small>Enter your Wordle clues to find all possible matching words</small>
+        </div>
+    </footer>
+</body>
+</html>
 {{end}}

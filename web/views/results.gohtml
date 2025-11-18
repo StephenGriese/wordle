@@ -1,0 +1,30 @@
+{{define "results"}}
+{{if .Results}}
+<div class="results-card">
+    <h3 class="mb-3">
+        Possible Words
+        <span class="badge bg-success">{{.WordCount}} found</span>
+    </h3>
+
+    {{if eq .WordCount 0}}
+    <div class="alert alert-warning">
+        <h5 class="alert-heading">🤔 No matching words found</h5>
+        <p class="mb-0">Please check your constraints - there might be a conflict in your clues.</p>
+    </div>
+    {{else}}
+    <div class="word-list">
+        {{range .Results}}
+        <span class="word-badge">{{.}}</span>
+        {{end}}
+    </div>
+
+    {{if gt .WordCount 100}}
+    <div class="alert alert-info mt-3 mb-0">
+        <small>💡 Tip: With {{.WordCount}} possible words, try entering more clues to narrow down the results.</small>
+    </div>
+    {{end}}
+    {{end}}
+</div>
+{{end}}
+{{end}}
+
