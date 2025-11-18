@@ -192,10 +192,10 @@ User enters clues:
 
 ### Environment Variables
 ```bash
-WORDLE_DICTIONARY=./wordle.txt    # Required
-WORDLE_REMOVE=./words-to-remove   # Optional
-WORDLE_PORT=8080                  # Optional (default: 8080)
-WORDLE_HOST=localhost             # Optional (default: localhost)
+WORDLE_DICTIONARY=./american-english    # Required
+WORDLE_REMOVE=./words-to-remove         # Optional
+WORDLE_PORT=8080                        # Optional (default: 8080)
+WORDLE_HOST=localhost                   # Optional (default: localhost)
 ```
 
 ### File Locations
@@ -211,7 +211,7 @@ WORDLE_HOST=localhost             # Optional (default: localhost)
 │       ├── layouts/
 │       │   └── bootstrap.gohtml    # Base layout
 │       └── wordleform.gohtml       # Main form
-├── wordle.txt                      # Dictionary
+├── american-english                # Dictionary
 └── words-to-remove                 # Exclusions
 ```
 
@@ -260,8 +260,8 @@ RUN go build -o server cmd/server/main.go
 FROM debian:stable-slim
 COPY --from=builder /app/server .
 COPY web ./web
-COPY wordle.txt .
-ENV WORDLE_DICTIONARY=./wordle.txt
+COPY american-english .
+ENV WORDLE_DICTIONARY=./american-english
 EXPOSE 8080
 CMD ["./server"]
 ```

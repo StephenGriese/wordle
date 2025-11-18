@@ -226,7 +226,7 @@ type PageData struct {
 ### Local Development
 ```bash
 # Terminal 1: Set up environment
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 export WORDLE_PORT=8080
 
@@ -266,9 +266,9 @@ FROM debian:stable-slim
 WORKDIR /app
 COPY --from=builder /app/server .
 COPY web ./web
-COPY wordle.txt .
+COPY american-english .
 COPY words-to-remove .
-ENV WORDLE_DICTIONARY=./wordle.txt
+ENV WORDLE_DICTIONARY=./american-english
 ENV WORDLE_REMOVE=./words-to-remove
 EXPOSE 8080
 CMD ["./server"]
@@ -278,7 +278,7 @@ CMD ["./server"]
 ```makefile
 .PHONY: run-server
 run-server:
-	@export WORDLE_DICTIONARY=./wordle.txt && \
+	@export WORDLE_DICTIONARY=./american-english && \
 	export WORDLE_REMOVE=./words-to-remove && \
 	go run cmd/server/main.go
 ```

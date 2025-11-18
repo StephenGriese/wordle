@@ -43,12 +43,12 @@ clean-target:
 clean: clean-target
 
 run-server:
-	@test -n "$(WORDLE_DICTIONARY)" || (echo "WORDLE_DICTIONARY not set. Run: export WORDLE_DICTIONARY=./wordle.txt" && exit 1)
+	@test -n "$(WORDLE_DICTIONARY)" || (echo "WORDLE_DICTIONARY not set. Run: export WORDLE_DICTIONARY=./american-english" && exit 1)
 	@echo "Starting Wordle Helper server..."
 	@go run ./cmd/server/main.go
 
 run-server-dev:
-	@export WORDLE_DICTIONARY=./wordle.txt && \
+	@export WORDLE_DICTIONARY=./american-english && \
 	export WORDLE_REMOVE=./words-to-remove && \
 	export WORDLE_PORT=8080 && \
 	go run ./cmd/server/main.go

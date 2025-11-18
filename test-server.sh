@@ -13,7 +13,7 @@ echo "Build successful!"
 
 echo ""
 echo "=== Starting server in background ==="
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 export WORDLE_PORT=9090
 

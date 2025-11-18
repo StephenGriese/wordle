@@ -215,7 +215,7 @@ web/
 
 ### Local Development
 ```bash
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 go run cmd/server/main.go
 ```

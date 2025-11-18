@@ -127,7 +127,7 @@ make run-server-dev
 ### Manual Start
 ```bash
 cd /Users/sgries174@cable.comcast.com/repos/sjg/wordle
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 export WORDLE_PORT=8080
 go run cmd/server/main.go
@@ -137,7 +137,7 @@ go run cmd/server/main.go
 ```bash
 cd /Users/sgries174@cable.comcast.com/repos/sjg/wordle
 go build -o wordle-server cmd/server/main.go
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 ./wordle-server
 ```

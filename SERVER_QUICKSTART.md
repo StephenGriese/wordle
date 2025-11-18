@@ -14,7 +14,7 @@ This will automatically:
 ### Option 2: Manual Setup
 ```bash
 # Set required environment variables
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 export WORDLE_PORT=8080  # optional, defaults to 8080
 
@@ -28,7 +28,7 @@ go run cmd/server/main.go
 make target/server
 
 # Run it
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 ./target/local/bin/wordle-server
 ```
@@ -135,7 +135,7 @@ make run-server
 ### "Missing WORDLE_DICTIONARY environment variable"
 Make sure you've set the environment variable before starting the server:
 ```bash
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 ```
 
 ### "Failed to load dictionary"

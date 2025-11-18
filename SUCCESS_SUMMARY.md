@@ -68,7 +68,7 @@ make run-server-dev
 
 ### Option 2: Manual
 ```bash
-export WORDLE_DICTIONARY=./wordle.txt
+export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
 go run cmd/server/main.go
 ```
