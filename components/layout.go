@@ -3,7 +3,7 @@ package components
 import (
 	g "github.com/maragudk/gomponents"
 	c "github.com/maragudk/gomponents/components"
-	. "github.com/maragudk/gomponents/html"
+	"github.com/maragudk/gomponents/html"
 )
 
 // Page creates the full HTML page layout with Bootstrap
@@ -12,34 +12,34 @@ func Page(title string, content g.Node) g.Node {
 		Title:    title,
 		Language: "en",
 		Head: []g.Node{
-			Link(Href("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"), Rel("stylesheet")),
-			Script(Src("/static/js/htmx-1.9.11.js")),
-			StyleEl(g.Raw(pageStyles)),
+			html.Link(html.Href("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"), html.Rel("stylesheet")),
+			html.Script(html.Src("/static/js/htmx-1.9.11.js")),
+			html.StyleEl(g.Raw(pageStyles)),
 		},
 		Body: []g.Node{
 			PageHeader(),
-			Div(Class("container"),
+			html.Div(html.Class("container"),
 				content,
 			),
 			PageFooter(),
-			Script(Src("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")),
+			html.Script(html.Src("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")),
 		},
 	})
 }
 
 // PageHeader renders the page header with reload button
 func PageHeader() g.Node {
-	return Div(Class("wordle-header"),
-		Div(Class("container"),
-			Div(Class("d-flex justify-content-between align-items-center"),
-				Div(
-					H1(g.Text("🎯 Wordle Helper")),
-					P(Class("text-muted mb-0"), g.Text("Find possible words based on your Wordle clues")),
+	return html.Div(html.Class("wordle-header"),
+		html.Div(html.Class("container"),
+			html.Div(html.Class("d-flex justify-content-between align-items-center"),
+				html.Div(
+					html.H1(g.Text("🎯 Wordle Helper")),
+					html.P(html.Class("text-muted mb-0"), g.Text("Find possible words based on your Wordle clues")),
 				),
-				Div(Class("text-end"),
-					Div(Class("reload-container"),
-						Button(
-							Class("btn btn-reload btn-sm"),
+				html.Div(html.Class("text-end"),
+					html.Div(html.Class("reload-container"),
+						html.Button(
+							html.Class("btn btn-reload btn-sm"),
 							g.Attr("hx-post", "/reload"),
 							g.Attr("hx-target", "#reload-message"),
 							g.Attr("hx-swap", "innerHTML"),
@@ -47,14 +47,14 @@ func PageHeader() g.Node {
 							g.Attr("hx-indicator", "#reload-spinner"),
 							g.Text("🔄 Reload Word List"),
 						),
-						Div(
-							ID("reload-spinner"),
-							Class("spinner-border spinner-border-sm text-info"),
-							Role("status"),
-							Span(Class("visually-hidden"), g.Text("Reloading...")),
+						html.Div(
+							html.ID("reload-spinner"),
+							html.Class("spinner-border spinner-border-sm text-info"),
+							html.Role("status"),
+							html.Span(html.Class("visually-hidden"), g.Text("Reloading...")),
 						),
 					),
-					Div(ID("reload-message")),
+					html.Div(html.ID("reload-message")),
 				),
 			),
 		),
@@ -63,9 +63,9 @@ func PageHeader() g.Node {
 
 // PageFooter renders the page footer
 func PageFooter() g.Node {
-	return Footer(Class("container mt-5"),
-		Div(Class("text-center text-muted"),
-			Small(g.Text("Enter your Wordle clues to find all possible matching words")),
+	return html.Footer(html.Class("container mt-5"),
+		html.Div(html.Class("text-center text-muted"),
+			html.Small(g.Text("Enter your Wordle clues to find all possible matching words")),
 		),
 	)
 }
