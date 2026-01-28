@@ -3,7 +3,7 @@ package components
 import (
 	g "github.com/maragudk/gomponents"
 	c "github.com/maragudk/gomponents/components"
-	"github.com/maragudk/gomponents/html"
+	html "github.com/maragudk/gomponents/html"
 )
 
 // Page creates the full HTML page layout with Bootstrap
