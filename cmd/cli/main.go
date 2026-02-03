@@ -58,16 +58,67 @@ func createLineHandler(stdout, stderr io.Writer, words []string) func(s string) 
 	}
 }
 
-func printPossibles(stdout io.Writer, possibles []string) {
-	const cols = 15
-	c := 0
-	for _, word := range possibles {
-		_, _ = fmt.Fprintf(stdout, "%s ", word)
-		c++
-		if c == cols {
-			_, _ = fmt.Fprintf(stdout, "\n")
-			c = 0
+func hasRepeatedLetters(word string) bool {
+	seen := make(map[rune]bool)
+	for _, char := range word {
+		if seen[char] {
+			return true
+		}
+		seen[char] = true
+	}
+	return false
+}
+
+func separateWordsByRepetition(words []string) (noRepeats []string, withRepeats []string) {
+	for _, word := range words {
+		if hasRepeatedLetters(word) {
+			withRepeats = append(withRepeats, word)
+		} else {
+			noRepeats = append(noRepeats, word)
 		}
 	}
-	_, _ = fmt.Fprintf(stdout, "\n\n")
+	return noRepeats, withRepeats
+}
+
+func printPossibles(stdout io.Writer, possibles []string) {
+	const cols = 15
+
+	// Separate words into two groups
+	noRepeats, withRepeats := separateWordsByRepetition(possibles)
+
+	// Print words without repeated letters
+	if len(noRepeats) > 0 {
+		_, _ = fmt.Fprintf(stdout, "No Repeated Letters (%d):\n", len(noRepeats))
+		c := 0
+		for _, word := range noRepeats {
+			_, _ = fmt.Fprintf(stdout, "%s ", word)
+			c++
+			if c == cols {
+				_, _ = fmt.Fprintf(stdout, "\n")
+				c = 0
+			}
+		}
+		if c > 0 {
+			_, _ = fmt.Fprintf(stdout, "\n")
+		}
+		_, _ = fmt.Fprintf(stdout, "\n")
+	}
+
+	// Print words with repeated letters
+	if len(withRepeats) > 0 {
+		_, _ = fmt.Fprintf(stdout, "Repeated Letters (%d):\n", len(withRepeats))
+		c := 0
+		for _, word := range withRepeats {
+			_, _ = fmt.Fprintf(stdout, "%s ", word)
+			c++
+			if c == cols {
+				_, _ = fmt.Fprintf(stdout, "\n")
+				c = 0
+			}
+		}
+		if c > 0 {
+			_, _ = fmt.Fprintf(stdout, "\n")
+		}
+		_, _ = fmt.Fprintf(stdout, "\n")
+	}
 }
