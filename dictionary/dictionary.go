@@ -7,7 +7,6 @@ import (
 	"slices"
 	"strings"
 	"unicode"
-	"wordle/pastwords"
 	"wordle/scan"
 )
 
@@ -16,17 +15,6 @@ func Create(stderr io.Writer, dict, remove string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	used, err := pastwords.FetchPastWords()
-	if err != nil {
-		return nil, err
-	}
-	_, _ = fmt.Fprintf(stderr, "Loaded %d past words\n", len(used))
-
-	for _, word := range used {
-		delete(loaded, word)
-	}
-	_, _ = fmt.Fprintf(stderr, "Loaded has %d words after removing past words\n", len(loaded))
 
 	// Remove words from the remove list
 	removeList, err := loadWords(stderr, remove)

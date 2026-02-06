@@ -67,8 +67,6 @@
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │ Create():                                               │ │
 │  │  • Load dictionary file                                │ │
-│  │  • Fetch past words (pastwords.FetchPastWords())      │ │
-│  │  • Remove past words                                   │ │
 │  │  • Remove custom word list                             │ │
 │  │  • Return filtered word list                           │ │
 │  └────────────────────────────────────────────────────────┘ │
@@ -79,7 +77,6 @@
 │                      Data Files                              │
 │  • american-english (dictionary - 5905 words)                │
 │  • words-to-remove (custom exclusions - 14 words)            │
-│  • NYTimes past words (fetched from web - 1600+)             │
 └──────────────────────────────────────────────────────────────┘
 
 
@@ -185,7 +182,6 @@ User enters clues:
 • wordle - Core filtering logic
 • usrcmd - Command parsing
 • views - Template rendering
-• pastwords - Past words fetching
 ```
 
 ## Configuration
@@ -276,8 +272,7 @@ CMD ["./server"]
 
 ### Startup
 - **Dictionary Load:** ~1-2 seconds (5905 words → 4328 after filtering)
-- **Past Words Fetch:** ~0.5-1 second (from NYTimes)
-- **Total Startup:** ~2-3 seconds
+- **Total Startup:** ~1-2 seconds
 
 ### Runtime
 - **Form Render:** <10ms
@@ -327,4 +322,3 @@ A clean, efficient architecture that:
 **Production readiness:** 100%
 
 🎯 **Mission Accomplished!**
-

@@ -59,7 +59,7 @@ heroku buildpacks:set heroku/go
 ### 6. Deploy
 ```bash
 # Add files if not already committed
-git add Procfile go.mod cmd/ handlers/ dictionary/ views/ web/ wordle/ usrcmd/ scan/ pastwords/ american-english words-to-remove nytimes
+git add Procfile go.mod cmd/ handlers/ dictionary/ views/ web/ wordle/ usrcmd/ scan/ american-english words-to-remove nytimes
 
 # Commit
 git commit -m "Add Heroku deployment configuration"
@@ -515,4 +515,3 @@ git push heroku main
 ```
 
 Enjoy your deployed Wordle Helper! 🎯
-
