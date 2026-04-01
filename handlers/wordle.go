@@ -4,7 +4,6 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
-	"time"
 	"wordle/components"
 	"wordle/usrcmd"
 	"wordle/wordle"
@@ -13,9 +12,6 @@ import (
 // WordList interface for dictionary management
 type WordList interface {
 	Words() []string
-	Reload() error
-	LastReload() time.Time
-	Count() int
 }
 
 // FormData represents the form input from the user
@@ -148,33 +144,3 @@ func renderError(w http.ResponseWriter, logger *slog.Logger, errMsg string, form
 	}
 }
 
-// HandleReload handles manual dictionary reload requests
-func HandleReload(logger *slog.Logger, wordList WordList) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		logger.Info("Reloading dictionary")
-
-		lastReload := wordList.LastReload()
-
-		err := wordList.Reload()
-		if err != nil {
-			logger.Error("Failed to reload dictionary", "error", err)
-			w.Header().Set("Content-Type", "text/html")
-			w.WriteHeader(http.StatusInternalServerError)
-			_ = components.ReloadErrorMessage(err).Render(w)
-			return
-		}
-
-		newCount := wordList.Count()
-		newReload := wordList.LastReload()
-
-		logger.Info("Dictionary reloaded successfully",
-			"word_count", newCount,
-			"previous_reload", lastReload.Format(time.RFC3339),
-			"new_reload", newReload.Format(time.RFC3339))
-
-		// Return HTML for HTMX to display
-		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(http.StatusOK)
-		_ = components.ReloadSuccessMessage(newCount, newReload.Format("3:04 PM")).Render(w)
-	}
-}

@@ -107,31 +107,3 @@ func ResultsCard(children ...g.Node) g.Node {
 	return html.Div(html.Class("results-card"), g.Group(children))
 }
 
-// ReloadSuccessMessage renders a success message after dictionary reload
-func ReloadSuccessMessage(wordCount int, timestamp string) g.Node {
-	return html.Div(
-		html.Class("alert alert-success alert-dismissible fade show mt-2"),
-		html.Role("alert"),
-		g.Textf("✅ Dictionary reloaded! %d words available (Updated: %s)", wordCount, timestamp),
-		html.Button(
-			html.Type("button"),
-			html.Class("btn-close"),
-			g.Attr("data-bs-dismiss", "alert"),
-		),
-	)
-}
-
-// ReloadErrorMessage renders an error message after failed dictionary reload
-func ReloadErrorMessage(err error) g.Node {
-	return html.Div(
-		html.Class("alert alert-danger alert-dismissible fade show mt-2"),
-		html.Role("alert"),
-		html.Strong(g.Text("Error: ")),
-		g.Textf("Failed to reload dictionary: %v", err),
-		html.Button(
-			html.Type("button"),
-			html.Class("btn-close"),
-			g.Attr("data-bs-dismiss", "alert"),
-		),
-	)
-}

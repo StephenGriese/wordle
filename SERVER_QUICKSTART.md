@@ -102,7 +102,7 @@ Continue narrowing down until you find the answer!
 
 ✅ **Real-time filtering** - Uses HTMX for instant results without page reload
 ✅ **Mobile friendly** - Works on phones and tablets
-✅ **Smart filtering** - Uses your existing dictionary and removes past words
+✅ **Smart filtering** - Uses your configured dictionary and remove-list files
 ✅ **Clear instructions** - Built-in help text
 ✅ **Error handling** - Helpful error messages if input is invalid
 
@@ -115,7 +115,7 @@ Continue narrowing down until you find the answer!
 | `WORDLE_DICTIONARY` | Yes | - | Path to dictionary file |
 | `WORDLE_REMOVE` | No | - | Path to words-to-remove file |
 | `WORDLE_PORT` | No | 8080 | Server port |
-| `WORDLE_HOST` | No | localhost | Server host |
+| `WORDLE_HOST` | No | 0.0.0.0 | Server host |
 
 ### Custom Port
 ```bash

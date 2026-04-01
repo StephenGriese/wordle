@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"io"
 	"sync"
-	"time"
 )
 
-// WordList manages the dictionary with reload capability
+// WordList manages the in-memory dictionary words.
 type WordList struct {
 	words      []string
-	lastReload time.Time
 	dictPath   string
 	removePath string
 	stderr     io.Writer
@@ -32,7 +30,7 @@ func NewWordList(stderr io.Writer, dictPath, removePath string) (*WordList, erro
 	return wl, nil
 }
 
-// Reload refreshes the word list from the dictionary and past words
+// Reload refreshes the word list from the configured files.
 func (wl *WordList) Reload() error {
 	wl.mu.Lock()
 	defer wl.mu.Unlock()
@@ -45,10 +43,8 @@ func (wl *WordList) Reload() error {
 	}
 
 	wl.words = words
-	wl.lastReload = time.Now()
 
-	_, _ = fmt.Fprintf(wl.stderr, "Dictionary reloaded: %d words available (last reload: %s)\n",
-		len(wl.words), wl.lastReload.Format(time.RFC3339))
+	_, _ = fmt.Fprintf(wl.stderr, "Dictionary reloaded: %d words available\n", len(wl.words))
 
 	return nil
 }
@@ -64,23 +60,3 @@ func (wl *WordList) Words() []string {
 	return result
 }
 
-// LastReload returns the time of the last reload
-func (wl *WordList) LastReload() time.Time {
-	wl.mu.RLock()
-	defer wl.mu.RUnlock()
-	return wl.lastReload
-}
-
-// Count returns the number of words in the dictionary
-func (wl *WordList) Count() int {
-	wl.mu.RLock()
-	defer wl.mu.RUnlock()
-	return len(wl.words)
-}
-
-// ShouldReload checks if reload is needed based on time elapsed
-func (wl *WordList) ShouldReload(maxAge time.Duration) bool {
-	wl.mu.RLock()
-	defer wl.mu.RUnlock()
-	return time.Since(wl.lastReload) > maxAge
-}

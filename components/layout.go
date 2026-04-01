@@ -27,36 +27,14 @@ func Page(title string, content g.Node) g.Node {
 	})
 }
 
-// PageHeader renders the page header with reload button
+// PageHeader renders the page header
 func PageHeader() g.Node {
 	return html.Div(html.Class("wordle-header"),
 		html.Div(html.Class("container"),
-			html.Div(html.Class("d-flex justify-content-between align-items-center"),
-				html.Div(
-					html.H1(g.Text("🎯 Wordle Helper")),
-					html.P(html.Class("text-muted mb-0"), g.Text("Find possible words based on your Wordle clues")),
-				),
-				html.Div(html.Class("text-end"),
-					html.Div(html.Class("reload-container"),
-						html.Button(
-							html.Class("btn btn-reload btn-sm"),
-							g.Attr("hx-post", "/reload"),
-							g.Attr("hx-target", "#reload-message"),
-							g.Attr("hx-swap", "innerHTML"),
-							g.Attr("hx-disabled-elt", "this"),
-							g.Attr("hx-indicator", "#reload-spinner"),
-							g.Text("🔄 Reload Word List"),
-						),
-						html.Div(
-							html.ID("reload-spinner"),
-							html.Class("spinner-border spinner-border-sm text-info"),
-							html.Role("status"),
-							html.Span(html.Class("visually-hidden"), g.Text("Reloading...")),
-						),
-					),
-					html.Div(html.ID("reload-message")),
-				),
-			),
+      html.Div(
+        html.H1(g.Text("🎯 Wordle Helper")),
+        html.P(html.Class("text-muted mb-0"), g.Text("Find possible words based on your Wordle clues")),
+      ),
 		),
 	)
 }
@@ -179,40 +157,4 @@ body {
     opacity: 0.6;
 }
 
-.btn-reload {
-    background-color: #0dcaf0;
-    border-color: #0dcaf0;
-    color: white;
-    font-size: 14px;
-    padding: 6px 12px;
-}
-
-.btn-reload:hover:not(:disabled) {
-    background-color: #0aa2c0;
-    border-color: #0aa2c0;
-    color: white;
-}
-
-.btn-reload:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.reload-container {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-#reload-spinner {
-    display: none;
-}
-
-#reload-spinner.htmx-request {
-    display: inline-block;
-}
-
-#reload-message {
-    margin-top: 10px;
-}
 `

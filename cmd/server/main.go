@@ -43,7 +43,7 @@ func run() error {
 		host = "0.0.0.0"
 	}
 
-	// Initialize dictionary with reload capability
+	// Initialize dictionary
 	_, _ = fmt.Fprintf(os.Stderr, "Loading dictionary from %s\n", dict)
 	wordList, err := dictionary.NewWordList(os.Stderr, dict, remove)
 	if err != nil {
@@ -68,8 +68,6 @@ func run() error {
 	// Solve endpoint
 	mux.HandleFunc("POST /wordle/solve", handlers.HandlePostSolve(logger, wordList))
 
-	// Reload endpoint (for manual dictionary refresh)
-	mux.HandleFunc("POST /reload", handlers.HandleReload(logger, wordList))
 
 	// Start server
 	addr := host + ":" + port

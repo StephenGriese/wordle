@@ -15,7 +15,7 @@ heroku config:set WORDLE_DICTIONARY=./american-english
 
 # 4. Deploy
 git add .
-git commit -m "Add reload + Heroku deployment"
+git commit -m "Update web app and deploy"
 git push heroku main
 
 # 5. Open
@@ -34,34 +34,24 @@ heroku open
 - ✅ `go.mod` - Go dependencies
 
 ### Modified
-- ✅ `cmd/server/main.go` - WordList + Heroku support
-- ✅ `handlers/wordle.go` - Reload endpoint
-- ✅ `web/views/layouts/bootstrap.gohtml` - Reload button
+- ✅ `cmd/server/main.go` - Heroku + server startup
+- ✅ `handlers/wordle.go` - Solve endpoint handlers
+- ✅ `components/*.go` - Gomponents UI
 
-### Documentation (9 files)
-- ✅ `FEATURE_DICTIONARY_RELOAD.md`
+### Documentation
+- ✅ `SERVER_QUICKSTART.md`
 - ✅ `HEROKU_DEPLOYMENT.md`
-- ✅ `SUMMARY_RELOAD_AND_HEROKU.md`
-- ✅ `VISUAL_GUIDE.md`
-- ✅ Plus 5 previous docs
+- ✅ `DOCUMENTATION_INDEX.md`
+- ✅ Core architecture/design docs
 
 ---
 
-## 🔄 Dictionary Reload
+## 📚 Dictionary Source
 
-### Web UI
-Click button in header: **[ 🔄 Reload Word List ]**
-
-### Command Line
-```bash
-curl -X POST http://localhost:8080/reload
-```
-
-### What It Does
-- Fetches latest NYTimes past words
-- Updates dictionary without restart
-- Takes ~1-2 seconds
-- Thread-safe
+### Web + CLI Behavior
+- Uses `WORDLE_DICTIONARY` (required)
+- Optionally removes entries from `WORDLE_REMOVE`
+- No past-word filtering by NYTimes list
 
 ---
 
@@ -106,9 +96,9 @@ heroku logs --tail
 heroku restart
 ```
 
-### Reload not working?
-1. Check browser console
-2. Verify HTMX loaded
+### Results look wrong?
+1. Verify `WORDLE_DICTIONARY` points to the expected file
+2. Verify `WORDLE_REMOVE` (if set) has expected entries
 3. Check server logs
 
 ---
@@ -117,11 +107,9 @@ heroku restart
 
 | Document | Purpose |
 |----------|---------|
-| `SUMMARY_RELOAD_AND_HEROKU.md` | 📄 Start here! Complete overview |
-| `FEATURE_DICTIONARY_RELOAD.md` | 🔄 Reload feature details |
 | `HEROKU_DEPLOYMENT.md` | 🚀 Deployment guide |
-| `VISUAL_GUIDE.md` | 👁️ What it looks like |
 | `SERVER_QUICKSTART.md` | ⚡ Quick start guide |
+| `DOCUMENTATION_INDEX.md` | 🧭 Complete documentation map |
 
 ---
 
@@ -129,7 +117,7 @@ heroku restart
 
 - [ ] Code compiles: `go build cmd/server/main.go`
 - [ ] All files added: `git add .`
-- [ ] Committed: `git commit -m "Add reload + Heroku"`
+- [ ] Committed: `git commit -m "Update web app and deploy"`
 - [ ] Dictionary files included
 - [ ] go.mod exists
 - [ ] Procfile exists
@@ -139,15 +127,15 @@ heroku restart
 ## 🎯 What You Built
 
 ### Features
-1. ✅ **Dictionary Reload** - Update words without restart
+1. ✅ **Web Solver** - Use the Wordle helper from browser
 2. ✅ **Heroku Deploy** - Cloud hosting ready
 3. ✅ **Thread Safety** - Concurrent access safe
 4. ✅ **HTMX UI** - Smooth interactions
-5. ✅ **Complete Docs** - 2,000+ lines
+5. ✅ **Shared Logic** - CLI and web use the same solver
 
 ### Benefits
 - 🚀 Deploy in 5 minutes
-- 🔄 Always up-to-date words
+- 📚 Configurable dictionary source
 - 🌐 Share with anyone
 - 📱 Works on mobile
 - 💰 Free tier available
@@ -179,7 +167,7 @@ heroku config            # View settings
 ## 🎉 Success!
 
 Both features complete:
-- ✅ Dictionary reload working
+- ✅ Web solver working
 - ✅ Heroku deployment ready
 - ✅ Documentation complete
 - ✅ Code compiles perfectly
