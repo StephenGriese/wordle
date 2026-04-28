@@ -1,29 +1,43 @@
-NAME := messi
-DESC := Kafka Messages to XMP ESS
-PREFIX ?= usr/local
+NAME := wordle
+DESC := Wordle web app
 VERSION := $(shell git describe --tags --always --dirty --match "[0-9]*.[0-9]*.[0-9]*")
-GOVERSION := 1.19.0
 BUILDVERSION := $(shell go version)
 BUILDTIME := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 BUILDER := $(shell echo "`git config user.name` <`git config user.email`>")
-PROJECT_URL := "https://github.com/comcast-pulse/$(NAME)"
 LDFLAGS := -X 'main.version=$(VERSION)' \
            -X 'main.buildTime=$(BUILDTIME)' \
            -X 'main.builder=$(BUILDER)' \
            -X 'main.goversion=$(BUILDVERSION)' \
            -X 'main.name=$(NAME)'
-DOCKER_REPO := "atlas-registry.sys.comcast.net"
 
-build: staticcheck lint test clean target/local
+# Sentinel file — proves `make init` has been run on this clone.
+HOOKS_SENTINEL=.git/hooks/.githooks-installed
+
+.PHONY: init checks staticcheck lint test build clean modules run-server run-server-dev
+
+# Guard target — aborts with a helpful message if init was never run.
+$(HOOKS_SENTINEL):
+	@echo ""
+	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+	@echo "⚠️  Run 'make init' first to configure git hooks."
+	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+	@echo ""
+	@exit 1
 
 init:
 	git config core.hooksPath .githooks
+	@touch $(HOOKS_SENTINEL)
+	@echo "✓ Git hooks configured. You're ready to develop."
+
+build: checks clean target/local
+
+checks: $(HOOKS_SENTINEL) staticcheck lint test
 
 staticcheck:
 	staticcheck ./...
 
 lint:
-	golangci-lint -v run ./...
+	golangci-lint -v run --fix ./...
 
 test:
 	go test ./...
@@ -53,4 +67,3 @@ run-server-dev:
 	export WORDLE_PORT=8080 && \
 	go run ./cmd/server/main.go
 
-.PHONY: clean lint modules build run-server run-server-dev target/server
