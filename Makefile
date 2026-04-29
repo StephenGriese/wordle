@@ -42,10 +42,10 @@ lint:
 test:
 	go test ./...
 
-target/local: modules
+target/local:
 	mkdir -p target/local/bin && go build -ldflags "$(LDFLAGS)" -o target/local/bin/wordle ./cmd/cli
 
-target/server: modules
+target/server:
 	mkdir -p target/local/bin && go build -ldflags "$(LDFLAGS)" -o target/local/bin/wordle-server ./cmd/server
 
 modules:
