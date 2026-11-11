@@ -25,12 +25,12 @@ go run cmd/server/main.go
 ### Option 3: Build and Run Binary
 ```bash
 # Build the server
-make target/server
+make server
 
 # Run it
 export WORDLE_DICTIONARY=./american-english
 export WORDLE_REMOVE=./words-to-remove
-./target/local/bin/wordle-server
+./bin/wordle-server
 ```
 
 ## Accessing the Application
@@ -176,7 +176,7 @@ make lint
 ### Building Both CLI and Server
 ```bash
 make build          # Builds CLI
-make target/server  # Builds server
+make server  # Builds server
 ```
 
 ## What's Next?
