@@ -1,5 +1,5 @@
 # Folders and such
-/target
+/bin
 
 # Environment config files
 /.env*
@@ -12,7 +12,4 @@
 
 # Mac hidden files
 .DS_Store
-
-# The compiled binary
-wordle-server
 

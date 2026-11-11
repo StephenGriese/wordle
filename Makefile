@@ -10,7 +10,7 @@ LDFLAGS := -X 'main.version=$(VERSION)' \
            -X 'main.goversion=$(BUILDVERSION)' \
            -X 'main.name=$(NAME)'
 
-BINARY := target/local/bin/wordle
+BINARY := bin/wordle
 
 # The sentinel lives in the *common* git dir's hooks directory, resolved
 # through git: in a linked worktree `.git` is a file, so a literal
@@ -59,13 +59,13 @@ link: build
 # lines rather than prerequisites so their order can never be scrambled —
 # recipe lines always run in order, unlike prerequisites under `make -j`.
 build: checks
-	rm -rf target
-	mkdir -p target/local/bin && go build -ldflags "$(LDFLAGS)" -o $(BINARY) ./cmd/cli
+	rm -rf bin
+	mkdir -p bin && go build -ldflags "$(LDFLAGS)" -o $(BINARY) ./cmd/cli
 
 # The server binary, built the same gated-clean way.
 server: checks
-	rm -rf target
-	mkdir -p target/local/bin && go build -ldflags "$(LDFLAGS)" -o target/local/bin/wordle-server ./cmd/server
+	rm -rf bin
+	mkdir -p bin && go build -ldflags "$(LDFLAGS)" -o bin/wordle-server ./cmd/server
 
 checks: $(HOOKS_SENTINEL) staticcheck lint test
 
@@ -94,7 +94,7 @@ modules:
 	go mod tidy
 
 clean:
-	rm -rf target
+	rm -rf bin
 
 run-server:
 	@test -n "$(WORDLE_DICTIONARY)" || (echo "WORDLE_DICTIONARY not set. Run: export WORDLE_DICTIONARY=./american-english" && exit 1)
