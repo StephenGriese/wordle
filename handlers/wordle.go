@@ -143,4 +143,3 @@ func renderError(w http.ResponseWriter, logger *slog.Logger, errMsg string, form
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
-

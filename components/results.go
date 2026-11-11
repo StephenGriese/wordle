@@ -106,4 +106,3 @@ func Results(words []string, count int) g.Node {
 func ResultsCard(children ...g.Node) g.Node {
 	return html.Div(html.Class("results-card"), g.Group(children))
 }
-

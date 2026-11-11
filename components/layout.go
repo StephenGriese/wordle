@@ -31,10 +31,10 @@ func Page(title string, content g.Node) g.Node {
 func PageHeader() g.Node {
 	return html.Div(html.Class("wordle-header"),
 		html.Div(html.Class("container"),
-      html.Div(
-        html.H1(g.Text("🎯 Wordle Helper")),
-        html.P(html.Class("text-muted mb-0"), g.Text("Find possible words based on your Wordle clues")),
-      ),
+			html.Div(
+				html.H1(g.Text("🎯 Wordle Helper")),
+				html.P(html.Class("text-muted mb-0"), g.Text("Find possible words based on your Wordle clues")),
+			),
 		),
 	)
 }

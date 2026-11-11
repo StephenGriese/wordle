@@ -68,7 +68,6 @@ func run() error {
 	// Solve endpoint
 	mux.HandleFunc("POST /wordle/solve", handlers.HandlePostSolve(logger, wordList))
 
-
 	// Start server
 	addr := host + ":" + port
 	logger.Info("Starting Wordle Helper server", "address", addr)

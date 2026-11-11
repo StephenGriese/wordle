@@ -21,7 +21,7 @@ BINARY := target/local/bin/wordle
 GIT_COMMON_DIR := $(shell git rev-parse --git-common-dir 2>/dev/null)
 HOOKS_SENTINEL := $(if $(GIT_COMMON_DIR),$(GIT_COMMON_DIR)/hooks,.git/hooks)/.githooks-installed
 
-.PHONY: all init link checks staticcheck lint test build server modules clean run-server run-server-dev
+.PHONY: all init link checks staticcheck lint lint-check fmt test build verify server modules clean run-server run-server-dev
 
 # Everything runs serially, even under `make -j`: golangci-lint --fix can
 # rewrite files while the other checks read them, and ordering-sensitive
@@ -75,8 +75,20 @@ staticcheck:
 lint:
 	golangci-lint -v run --fix ./...
 
+# Verify lint/formatting without rewriting files (CI uses this).
+lint-check:
+	golangci-lint run ./...
+
+# Apply formatter fixes (goimports) without running the full check suite.
+fmt:
+	golangci-lint fmt ./...
+
 test:
-	go test ./...
+	go test -race ./...
+
+# Guard: refuse to trust a binary that does not match the current source.
+verify: $(HOOKS_SENTINEL)
+	bash scripts/verify-build.sh $(BINARY)
 
 modules:
 	go mod tidy

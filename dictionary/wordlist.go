@@ -59,4 +59,3 @@ func (wl *WordList) Words() []string {
 	copy(result, wl.words)
 	return result
 }
-
