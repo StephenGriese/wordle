@@ -67,7 +67,7 @@ server: checks
 	rm -rf target
 	mkdir -p target/local/bin && go build -ldflags "$(LDFLAGS)" -o target/local/bin/wordle-server ./cmd/server
 
-checks: $(HOOKS_SENTINEL) staticcheck lint test
+checks: $(HOOKS_SENTINEL) staticcheck lint-check test
 
 staticcheck:
 	staticcheck ./...
